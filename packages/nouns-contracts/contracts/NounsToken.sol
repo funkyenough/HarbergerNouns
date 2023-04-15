@@ -48,6 +48,13 @@ contract NounsToken is INounsToken, Ownable, ERC721Checkpointable {
     // Whether the seeder can be updated
     bool public isSeederLocked;
 
+    //The selling price of the Noun
+    //This needs to be rewritten to an array
+    uint256 public sellingPrice;
+
+    //The tax rate of the Noun
+    uint256 public taxRate;
+
     // The noun seeds
     mapping(uint256 => INounsSeeder.Seed) public seeds;
 
@@ -97,6 +104,12 @@ contract NounsToken is INounsToken, Ownable, ERC721Checkpointable {
      */
     modifier onlyMinter() {
         require(msg.sender == minter, 'Sender is not the minter');
+        _;
+    }
+
+    //Requires that deposit is at least as large as the sellingPrice
+    modifier whenDepositIsSufficient() {
+        require(msg.value >= sellingPrice, 'Insufficient Deposit');
         _;
     }
 
@@ -261,3 +274,7 @@ contract NounsToken is INounsToken, Ownable, ERC721Checkpointable {
         return nounId;
     }
 }
+
+// function _setSellingPrice(uint256 nounId, uint256 price) internal {
+//     sellingPrices[nounId] = price;
+// }
